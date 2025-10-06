@@ -17,7 +17,7 @@ window.translations = {
     },
     hero: {
       subtitle:
-        "Un rincón irlandés con alma latina. Cocteles de autor, cervezas artesanales y música en vivo.",
+        "Un rincón irlandés en Santiago de Compostela. Cocteles de autor, cervezas artesanales y música en vivo.",
     },
     about: {
       title: "Nuestra historia",
