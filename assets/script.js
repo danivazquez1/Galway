@@ -2,14 +2,17 @@ const menuContainer = document.querySelector(".menu__items");
 const categoriesContainer = document.querySelector(".menu__categories");
 const eventosGrid = document.getElementById("eventos-grid");
 const galeriaGrid = document.getElementById("galeria-grid");
-const form = document.getElementById("reserva-form");
-const feedback = document.querySelector(".form__feedback");
 const toggle = document.querySelector(".navbar__toggle");
 const linksList = document.querySelector(".navbar__links");
 const currentYear = document.getElementById("anio");
 
 const siteInfo = window.siteInfo || {};
 const menuData = window.menuData || { categorias: [], eventos: [], galeria: [] };
+let activeCategoryId = null;
+
+function getFirstCategoryId() {
+  return menuData.categorias?.[0]?.id || null;
+}
 
 function formatCurrency(value) {
   if (value === null || value === undefined || value === "") return "";
@@ -25,18 +28,38 @@ function formatCurrency(value) {
   }).format(numeric);
 }
 
-function renderMenuItems(categoryId = "all") {
+function updateActiveCategoryButton() {
+  if (!categoriesContainer) return;
+  categoriesContainer.querySelectorAll(".menu__category-btn").forEach((btn) => {
+    btn.classList.toggle("is-active", btn.dataset.category === activeCategoryId);
+  });
+}
+
+function renderMenuItems(categoryId = null) {
   if (!menuContainer) return;
   menuContainer.innerHTML = "";
 
-  const items = menuData.categorias.flatMap((categoria) =>
-    categoryId === "all" || categoryId === categoria.id
-      ? categoria.items.map((item) => ({ ...item, categoria: categoria.nombre }))
-      : []
-  );
+  if (!menuData.categorias?.length) {
+    menuContainer.innerHTML = `<p>No hay elementos cargados. Edita <code>data/menu.js</code> para agregar tu menú.</p>`;
+    return;
+  }
+
+  const selectedId = categoryId || activeCategoryId || getFirstCategoryId();
+  activeCategoryId = selectedId;
+
+  const categoriaSeleccionada = menuData.categorias.find((categoria) => categoria.id === selectedId);
+
+  if (!categoriaSeleccionada) {
+    menuContainer.innerHTML = `<p>Selecciona una categoría para ver sus opciones.</p>`;
+    updateActiveCategoryButton();
+    return;
+  }
+
+  const items = categoriaSeleccionada.items.map((item) => ({ ...item, categoria: categoriaSeleccionada.nombre }));
 
   if (!items.length) {
     menuContainer.innerHTML = `<p>No hay elementos cargados. Edita <code>data/menu.js</code> para agregar tu menú.</p>`;
+    updateActiveCategoryButton();
     return;
   }
 
@@ -61,29 +84,41 @@ function renderMenuItems(categoryId = "all") {
   });
 
   menuContainer.appendChild(fragment);
+  updateActiveCategoryButton();
 }
 
 function renderCategories() {
   if (!categoriesContainer) return;
-  const buttons = menuData.categorias.map(
-    (categoria) => `
-      <button class="menu__category-btn" data-category="${categoria.id}">
-        ${categoria.nombre}
-      </button>
-    `
-  );
-  categoriesContainer.insertAdjacentHTML("beforeend", buttons.join(""));
+  categoriesContainer.innerHTML = "";
+
+  if (!menuData.categorias?.length) {
+    categoriesContainer.innerHTML = "<p>No hay categorías disponibles.</p>";
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+  activeCategoryId = activeCategoryId || getFirstCategoryId();
+
+  menuData.categorias.forEach((categoria) => {
+    const button = document.createElement("button");
+    button.className = "menu__category-btn";
+    button.dataset.category = categoria.id;
+    button.textContent = categoria.nombre;
+    if (categoria.id === activeCategoryId) {
+      button.classList.add("is-active");
+    }
+    fragment.appendChild(button);
+  });
+
+  categoriesContainer.appendChild(fragment);
 }
 
 function handleCategoryClick(event) {
   const button = event.target.closest(".menu__category-btn");
   if (!button) return;
 
-  categoriesContainer.querySelectorAll(".menu__category-btn").forEach((btn) =>
-    btn.classList.toggle("is-active", btn === button)
-  );
-
-  renderMenuItems(button.dataset.category);
+  activeCategoryId = button.dataset.category;
+  renderMenuItems(activeCategoryId);
 }
 
 function renderEventos() {
@@ -170,17 +205,6 @@ function hydrateSiteInfo() {
   }
 }
 
-function setupForm() {
-  if (!form || !feedback) return;
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const formData = new FormData(form);
-    const nombre = formData.get("nombre");
-    feedback.textContent = `Gracias ${nombre || ""}, pronto nos comunicaremos contigo.`;
-    form.reset();
-  });
-}
-
 function setupNavbar() {
   if (!toggle || !linksList) return;
   toggle.addEventListener("click", () => {
@@ -194,7 +218,6 @@ function init() {
   renderEventos();
   renderGaleria();
   hydrateSiteInfo();
-  setupForm();
   setupNavbar();
   if (currentYear) currentYear.textContent = new Date().getFullYear();
 
