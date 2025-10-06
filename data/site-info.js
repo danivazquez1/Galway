@@ -1,7 +1,7 @@
 window.siteInfo = {
   direccion: "Rúa Xaquín Lorenzo, 2, 15895 O Milladoiro, A Coruña",
-  barrio: "Barrio Manila, Medellín",
-  mapa: "https://maps.google.com/?q=Galway+Bar",
+  barrio: "",
+  mapa: "https://maps.google.com/?q=Galway+Irish+Tavern",
   telefono: "",
   whatsapp: "",
   correo: "",

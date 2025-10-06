@@ -586,7 +586,7 @@ window.menuData = {
     },
     {
       tipo: "texto",
-      contenido: "Happy Hour de 5 a 7 p.m. con 2x1 en cocteles seleccionados.",
+      contenido: "Evento",
     },
     {
       tipo: "imagen",
