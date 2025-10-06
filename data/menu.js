@@ -576,12 +576,12 @@ window.menuData = {
   galeria: [
     {
       tipo: "imagen",
-      src: "https://images.unsplash.com/photo-1514361892635-6e122620e438?auto=format&fit=crop&w=800&q=80",
+      src: "assets/BarraGalway.webp",
       alt: "Barra iluminada con botellas de licor",
     },
     {
       tipo: "imagen",
-      src: "https://images.unsplash.com/photo-1527169400562-63b3bde89d04?auto=format&fit=crop&w=800&q=80",
+      src: "assets/cervezaenbarra.webp",
       alt: "Grupo de amigos brindando con cervezas",
     },
     {
