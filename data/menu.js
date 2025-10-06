@@ -576,22 +576,21 @@ window.menuData = {
   galeria: [
     {
       tipo: "imagen",
-      src: "https://images.unsplash.com/photo-1514361892635-6e122620e438?auto=format&fit=crop&w=800&q=80",
+      src: "assets/BarraGalway.webp",
       alt: "Barra iluminada con botellas de licor",
     },
     {
       tipo: "imagen",
-      src: "https://images.unsplash.com/photo-1527169400562-63b3bde89d04?auto=format&fit=crop&w=800&q=80",
-      alt: "Grupo de amigos brindando con cervezas",
+      src: "assets/cervezaenbarra.webp",
+      alt: "Cerveza en barra",
     },
     {
       tipo: "texto",
-      contenido: "Happy Hour de 5 a 7 p.m. con 2x1 en cocteles seleccionados.",
+      contenido: "Evento",
     },
     {
-      tipo: "imagen",
-      src: "https://images.unsplash.com/photo-1532635241-17e820acc59f?auto=format&fit=crop&w=800&q=80",
-      alt: "Tabla de quesos y embutidos",
+      tipo: "texto",
+      contenido: "Fiesta",
     },
   ],
 };
