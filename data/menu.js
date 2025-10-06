@@ -582,16 +582,15 @@ window.menuData = {
     {
       tipo: "imagen",
       src: "assets/cervezaenbarra.webp",
-      alt: "Grupo de amigos brindando con cervezas",
+      alt: "Cerveza en barra",
     },
     {
       tipo: "texto",
       contenido: "Evento",
     },
     {
-      tipo: "imagen",
-      src: "https://images.unsplash.com/photo-1532635241-17e820acc59f?auto=format&fit=crop&w=800&q=80",
-      alt: "Tabla de quesos y embutidos",
+      tipo: "texto",
+      contenido: "Fiesta",
     },
   ],
 };
