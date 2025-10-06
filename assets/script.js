@@ -2,14 +2,66 @@ const menuContainer = document.querySelector(".menu__items");
 const categoriesContainer = document.querySelector(".menu__categories");
 const eventosGrid = document.getElementById("eventos-grid");
 const galeriaGrid = document.getElementById("galeria-grid");
-const form = document.getElementById("reserva-form");
-const feedback = document.querySelector(".form__feedback");
 const toggle = document.querySelector(".navbar__toggle");
 const linksList = document.querySelector(".navbar__links");
 const currentYear = document.getElementById("anio");
+const languageSelector = document.getElementById("language-switcher");
+const scheduleList = document.getElementById("horario-list");
+const htmlElement = document.documentElement;
 
 const siteInfo = window.siteInfo || {};
 const menuData = window.menuData || { categorias: [], eventos: [], galeria: [] };
+const translations = window.translations || {};
+const availableLanguages = Object.keys(translations);
+const DEFAULT_LANGUAGE = availableLanguages.includes("es")
+  ? "es"
+  : availableLanguages[0] || "es";
+let currentLanguage = DEFAULT_LANGUAGE;
+let activeCategoryId = null;
+
+function getTranslationConfig(lang = currentLanguage) {
+  return translations[lang] || {};
+}
+
+function t(key, fallback = "") {
+  const segments = key.split(".");
+  let value = getTranslationConfig();
+  for (const segment of segments) {
+    if (value && Object.prototype.hasOwnProperty.call(value, segment)) {
+      value = value[segment];
+    } else {
+      value = undefined;
+      break;
+    }
+  }
+  return value !== undefined ? value : fallback;
+}
+
+function populateLanguageSelector() {
+  if (!languageSelector || !availableLanguages.length) return;
+  languageSelector.innerHTML = "";
+  availableLanguages.forEach((lang) => {
+    const option = document.createElement("option");
+    option.value = lang;
+    option.textContent = translations[lang]?.languageName || lang;
+    languageSelector.appendChild(option);
+  });
+
+  languageSelector.value = currentLanguage;
+  languageSelector.addEventListener("change", (event) => {
+    setLanguage(event.target.value);
+  });
+}
+
+function getFirstCategoryId() {
+  return menuData.categorias?.[0]?.id || null;
+}
+
+function getLocalizedCategoryLabel(categoria) {
+  if (!categoria) return "";
+  const overrides = t("menu.categoryLabels", {});
+  return overrides?.[categoria.id] || categoria.nombre || categoria.id || "";
+}
 
 function formatCurrency(value) {
   if (value === null || value === undefined || value === "") return "";
@@ -17,26 +69,58 @@ function formatCurrency(value) {
   if (Number.isNaN(numeric)) {
     return value;
   }
-  return new Intl.NumberFormat("es-ES", {
+  const locale = t("numberLocale", "es-ES");
+  const currency = t("currency", "EUR");
+  return new Intl.NumberFormat(locale, {
     style: "currency",
-    currency: "EUR",
+    currency,
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(numeric);
 }
 
-function renderMenuItems(categoryId = "all") {
+function updateActiveCategoryButton() {
+  if (!categoriesContainer) return;
+  categoriesContainer.querySelectorAll(".menu__category-btn").forEach((btn) => {
+    btn.classList.toggle("is-active", btn.dataset.category === activeCategoryId);
+  });
+}
+
+function renderMenuItems(categoryId = null) {
   if (!menuContainer) return;
   menuContainer.innerHTML = "";
 
-  const items = menuData.categorias.flatMap((categoria) =>
-    categoryId === "all" || categoryId === categoria.id
-      ? categoria.items.map((item) => ({ ...item, categoria: categoria.nombre }))
-      : []
-  );
+  if (!menuData.categorias?.length) {
+    menuContainer.innerHTML = `<p>${t(
+      "menu.emptyItems",
+      "No hay elementos cargados. Edita data/menu.js para agregar tu menú."
+    )}</p>`;
+    return;
+  }
+
+  const selectedId = categoryId || activeCategoryId || getFirstCategoryId();
+  activeCategoryId = selectedId;
+
+  const categoriaSeleccionada = menuData.categorias.find((categoria) => categoria.id === selectedId);
+
+  if (!categoriaSeleccionada) {
+    menuContainer.innerHTML = `<p>${t(
+      "menu.selectCategory",
+      "Selecciona una categoría para ver sus opciones."
+    )}</p>`;
+    updateActiveCategoryButton();
+    return;
+  }
+
+  const categoriaNombre = getLocalizedCategoryLabel(categoriaSeleccionada);
+  const items = categoriaSeleccionada.items.map((item) => ({ ...item, categoria: categoriaNombre }));
 
   if (!items.length) {
-    menuContainer.innerHTML = `<p>No hay elementos cargados. Edita <code>data/menu.js</code> para agregar tu menú.</p>`;
+    menuContainer.innerHTML = `<p>${t(
+      "menu.emptyItems",
+      "No hay elementos cargados. Edita data/menu.js para agregar tu menú."
+    )}</p>`;
+    updateActiveCategoryButton();
     return;
   }
 
@@ -61,35 +145,53 @@ function renderMenuItems(categoryId = "all") {
   });
 
   menuContainer.appendChild(fragment);
+  updateActiveCategoryButton();
 }
 
 function renderCategories() {
   if (!categoriesContainer) return;
-  const buttons = menuData.categorias.map(
-    (categoria) => `
-      <button class="menu__category-btn" data-category="${categoria.id}">
-        ${categoria.nombre}
-      </button>
-    `
-  );
-  categoriesContainer.insertAdjacentHTML("beforeend", buttons.join(""));
+  categoriesContainer.innerHTML = "";
+
+  if (!menuData.categorias?.length) {
+    categoriesContainer.innerHTML = `<p>${t(
+      "menu.emptyCategories",
+      "No hay categorías disponibles."
+    )}</p>`;
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+  activeCategoryId = activeCategoryId || getFirstCategoryId();
+
+  menuData.categorias.forEach((categoria) => {
+    const button = document.createElement("button");
+    button.className = "menu__category-btn";
+    button.dataset.category = categoria.id;
+    button.textContent = getLocalizedCategoryLabel(categoria);
+    if (categoria.id === activeCategoryId) {
+      button.classList.add("is-active");
+    }
+    fragment.appendChild(button);
+  });
+
+  categoriesContainer.appendChild(fragment);
 }
 
 function handleCategoryClick(event) {
   const button = event.target.closest(".menu__category-btn");
   if (!button) return;
 
-  categoriesContainer.querySelectorAll(".menu__category-btn").forEach((btn) =>
-    btn.classList.toggle("is-active", btn === button)
-  );
-
-  renderMenuItems(button.dataset.category);
+  activeCategoryId = button.dataset.category;
+  renderMenuItems(activeCategoryId);
 }
 
 function renderEventos() {
   if (!eventosGrid) return;
   if (!menuData.eventos?.length) {
-    eventosGrid.innerHTML = "<p>Agrega tus experiencias en <code>data/menu.js</code>.</p>";
+    eventosGrid.innerHTML = `<p>${t(
+      "events.empty",
+      "Agrega tus experiencias en data/menu.js."
+    )}</p>`;
     return;
   }
   const fragment = document.createDocumentFragment();
@@ -108,7 +210,10 @@ function renderEventos() {
 function renderGaleria() {
   if (!galeriaGrid) return;
   if (!menuData.galeria?.length) {
-    galeriaGrid.innerHTML = "<p>Actualiza la galería en <code>data/menu.js</code>.</p>";
+    galeriaGrid.innerHTML = `<p>${t(
+      "gallery.empty",
+      "Actualiza la galería en data/menu.js."
+    )}</p>`;
     return;
   }
   const fragment = document.createDocumentFragment();
@@ -121,7 +226,8 @@ function renderGaleria() {
       img.alt = item.alt || "Imagen del bar";
       element.appendChild(img);
     } else {
-      element.textContent = item.contenido || "Actualiza este espacio con tus fotos o frases.";
+      element.textContent =
+        item.contenido || t("gallery.fallbackText", "Actualiza este espacio con tus fotos o frases.");
     }
     fragment.appendChild(element);
   });
@@ -139,46 +245,136 @@ function hydrateSiteInfo() {
     mapa: document.getElementById("mapa"),
   };
 
-  if (fields.direccion) fields.direccion.textContent = siteInfo.direccion || "Actualiza tu dirección";
-  if (fields.barrio) fields.barrio.textContent = siteInfo.barrio || "Ciudad";
+  if (fields.direccion) {
+    fields.direccion.textContent = siteInfo.direccion || t("info.addressPlaceholder", "Actualiza tu dirección");
+  }
+  if (fields.barrio) {
+    fields.barrio.textContent = siteInfo.barrio || t("info.cityPlaceholder", "Ciudad");
+  }
 
   if (fields.telefono) {
-    fields.telefono.textContent = siteInfo.telefono || "Completa el teléfono";
+    const fallback = t("contact.placeholders.phone", "Completa el teléfono");
+    fields.telefono.textContent = siteInfo.telefono || fallback;
     fields.telefono.href = siteInfo.telefono ? `tel:${siteInfo.telefono.replace(/\s+/g, "")}` : "tel:";
   }
 
   if (fields.whatsapp) {
-    fields.whatsapp.textContent = siteInfo.whatsapp || "Completa el número";
+    const fallback = t("contact.placeholders.whatsapp", "Completa el número");
+    fields.whatsapp.textContent = siteInfo.whatsapp || fallback;
     fields.whatsapp.href = siteInfo.whatsapp
       ? `https://wa.me/${siteInfo.whatsapp.replace(/[^0-9]/g, "")}`
       : "https://wa.me/";
   }
 
   if (fields.correo) {
-    fields.correo.textContent = siteInfo.correo || "Completa el correo";
+    const fallback = t("contact.placeholders.email", "Completa el correo");
+    fields.correo.textContent = siteInfo.correo || fallback;
     fields.correo.href = siteInfo.correo ? `mailto:${siteInfo.correo}` : "mailto:";
   }
 
   if (fields.instagram) {
-    fields.instagram.textContent = siteInfo.instagram ? "@galwaybar" : "Instagram";
+    const fallback = t("contact.placeholders.instagram", "Instagram");
+    let displayHandle = fallback;
+    if (siteInfo.instagramTexto) {
+      displayHandle = siteInfo.instagramTexto;
+    } else if (siteInfo.instagram) {
+      displayHandle = siteInfo.instagram
+        .replace(/https?:\/\/(www\.)?instagram\.com\//i, "@")
+        .replace(/\/?$/, "");
+    }
+    fields.instagram.textContent = displayHandle || fallback;
     fields.instagram.href = siteInfo.instagram || "#";
   }
 
   if (fields.mapa) {
+    fields.mapa.textContent = t("info.mapLink", "Ver en Google Maps");
     fields.mapa.href = siteInfo.mapa || "#";
     fields.mapa.classList.toggle("is-disabled", !siteInfo.mapa);
   }
 }
 
-function setupForm() {
-  if (!form || !feedback) return;
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const formData = new FormData(form);
-    const nombre = formData.get("nombre");
-    feedback.textContent = `Gracias ${nombre || ""}, pronto nos comunicaremos contigo.`;
-    form.reset();
+function renderSchedule() {
+  if (!scheduleList) return;
+  scheduleList.innerHTML = "";
+
+  const scheduleConfig = getTranslationConfig().schedule || {};
+  const entries = Array.isArray(scheduleConfig.entries) ? scheduleConfig.entries : [];
+  const separator = scheduleConfig.separator ?? ": ";
+
+  entries.forEach((entry) => {
+    const li = document.createElement("li");
+    const daySpan = document.createElement("span");
+    daySpan.textContent = entry.day || "";
+    li.appendChild(daySpan);
+    if (entry.hours) {
+      li.append(document.createTextNode(`${separator}${entry.hours}`));
+    }
+    scheduleList.appendChild(li);
   });
+}
+
+function applyTranslations() {
+  const config = getTranslationConfig();
+
+  if (htmlElement) {
+    htmlElement.lang = config.htmlLang || currentLanguage;
+  }
+
+  if (config.meta?.title) {
+    document.title = config.meta.title;
+  } else {
+    document.title = "Galway Bar";
+  }
+
+  const brand = document.querySelector(".navbar__brand");
+  if (brand) {
+    brand.textContent = config.nav?.brand || "Galway";
+  }
+
+  if (toggle) {
+    toggle.setAttribute("aria-label", config.nav?.toggleLabel || "Toggle navigation");
+  }
+
+  if (languageSelector) {
+    languageSelector.setAttribute(
+      "aria-label",
+      config.language?.selectorLabel || languageSelector.getAttribute("aria-label") || "Language"
+    );
+  }
+
+  if (categoriesContainer) {
+    categoriesContainer.setAttribute(
+      "aria-label",
+      config.menu?.categoriesAria || categoriesContainer.getAttribute("aria-label") || "Categorías del menú"
+    );
+  }
+
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    const key = element.dataset.i18n;
+    if (!key) return;
+    const translated = t(key, element.textContent || "");
+    if (translated !== undefined) {
+      element.textContent = translated;
+    }
+  });
+
+  renderSchedule();
+}
+
+function setLanguage(lang) {
+  const targetLang = translations[lang] ? lang : DEFAULT_LANGUAGE;
+  currentLanguage = targetLang;
+
+  if (languageSelector && languageSelector.value !== targetLang) {
+    languageSelector.value = targetLang;
+  }
+
+  applyTranslations();
+  renderCategories();
+  renderMenuItems();
+  renderEventos();
+  renderGaleria();
+  hydrateSiteInfo();
 }
 
 function setupNavbar() {
@@ -189,12 +385,8 @@ function setupNavbar() {
 }
 
 function init() {
-  renderCategories();
-  renderMenuItems();
-  renderEventos();
-  renderGaleria();
-  hydrateSiteInfo();
-  setupForm();
+  populateLanguageSelector();
+  setLanguage(currentLanguage);
   setupNavbar();
   if (currentYear) currentYear.textContent = new Date().getFullYear();
 
