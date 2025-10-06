@@ -16,62 +16,51 @@
     <header class="hero" id="inicio">
       <div class="hero__overlay"></div>
       <div class="hero__content">
-        <h1>Galway Irish Tavern</h1>
-        <p class="hero__subtitle">
-          Un rincón irlandés en Santiago de Compostela. Cocteles de autor, cervezas artesanales y música en vivo.
-        </p>
+        <h1>Galway Bar</h1>
+        <p class="hero__subtitle" data-i18n="hero.subtitle"></p>
       </div>
       <nav class="navbar">
         <a class="navbar__brand" href="#inicio">Galway</a>
-        <button class="navbar__toggle" aria-label="Menú">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
         <ul class="navbar__links">
-          <li><a href="#sobre">Sobre nosotros</a></li>
-          <li><a href="#menu">Menú</a></li>
-          <li><a href="#eventos">Eventos</a></li>
-          <li><a href="#galeria">Galería</a></li>
+          <li><a href="#sobre" data-i18n="nav.about"></a></li>
+          <li><a href="#menu" data-i18n="nav.menu"></a></li>
+          <li><a href="#eventos" data-i18n="nav.events"></a></li>
+          <li><a href="#galeria" data-i18n="nav.gallery"></a></li>
         </ul>
+        <div class="navbar__controls">
+          <select id="language-switcher" class="navbar__select" aria-label="Seleccionar idioma"></select>
+          <button class="navbar__toggle" type="button" aria-label="Menú">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
       </nav>
     </header>
 
     <main>
       <section class="section" id="sobre">
         <div class="section__content">
-          <h2>Nuestra historia</h2>
-          <p>
-            Galway Bar nació como un homenaje a los pubs tradicionales de Irlanda con ingredientes y ritmos latinoamericanos.
-            Somos un equipo apasionado por la buena música, los sabores genuinos y la hospitalidad cálida. Cada semana
-            organizamos eventos especiales, catas guiadas y noches temáticas para que siempre encuentres algo nuevo.
-          </p>
+          <h2 data-i18n="about.title"></h2>
+          <p data-i18n="about.description"></p>
           <div class="info-grid">
             <div>
-              <h3>Horario</h3>
-              <ul class="plain-list">
-                <li><span>Monday:</span> Closed</li>
-                <li><span>Tuesday:</span> 8:00 a.m. – 12:00 a.m.</li>
-                <li><span>Wednesday:</span> 8:00 a.m. – 12:00 a.m.</li>
-                <li><span>Thursday:</span> 8:00 a.m. – 12:00 a.m.</li>
-                <li><span>Friday:</span> 8:00 a.m. – 2:00 a.m.</li>
-                <li><span>Saturday:</span> 9:00 a.m. – 2:00 a.m.</li>
-                <li><span>Sunday:</span> 9:00 a.m. – 12:00 a.m.</li>
-              </ul>
+              <h3 data-i18n="schedule.title"></h3>
+              <ul class="plain-list" id="horario-list"></ul>
             </div>
             <div>
-              <h3>Ubicación</h3>
+              <h3 data-i18n="info.locationTitle"></h3>
               <p id="direccion"></p>
               <p id="barrio"></p>
-              <a id="mapa" class="link" href="#" target="_blank" rel="noopener">Ver en Google Maps</a>
+              <a id="mapa" class="link" href="#" target="_blank" rel="noopener" data-i18n="info.mapLink"></a>
             </div>
             <div>
-              <h3>Contacto</h3>
+              <h3 data-i18n="contact.title"></h3>
               <ul class="plain-list">
-                <li><span>Teléfono:</span> <a id="telefono" href="tel:"></a></li>
-                <li><span>WhatsApp:</span> <a id="whatsapp" href="https://wa.me/" target="_blank" rel="noopener"></a></li>
-                <li><span>Correo:</span> <a id="correo" href="mailto:"></a></li>
-                <li><span>Instagram:</span> <a id="instagram" href="#" target="_blank" rel="noopener"></a></li>
+                <li><span data-i18n="contact.phoneLabel"></span> <a id="telefono" href="tel:"></a></li>
+                <li><span data-i18n="contact.whatsappLabel"></span> <a id="whatsapp" href="https://wa.me/" target="_blank" rel="noopener"></a></li>
+                <li><span data-i18n="contact.emailLabel"></span> <a id="correo" href="mailto:"></a></li>
+                <li><span data-i18n="contact.instagramLabel"></span> <a id="instagram" href="#" target="_blank" rel="noopener"></a></li>
               </ul>
             </div>
           </div>
@@ -80,8 +69,8 @@
 
       <section class="section section--accent" id="menu">
         <div class="section__content">
-          <h2>Menú</h2>
-          <p>Explora nuestras categorías y descubre cócteles exclusivos, cervezas de barril y platos para compartir.</p>
+          <h2 data-i18n="menu.title"></h2>
+          <p data-i18n="menu.description"></p>
           <div class="menu">
             <aside class="menu__categories" aria-label="Categorías del menú"></aside>
             <div class="menu__items" aria-live="polite"></div>
@@ -91,14 +80,14 @@
 
       <section class="section" id="eventos">
         <div class="section__content">
-          <h2>Eventos y experiencias</h2>
+          <h2 data-i18n="events.title"></h2>
           <div class="card-grid" id="eventos-grid"></div>
         </div>
       </section>
 
       <section class="section section--dark" id="galeria">
         <div class="section__content">
-          <h2>Galería</h2>
+          <h2 data-i18n="gallery.title"></h2>
           <div class="gallery" id="galeria-grid"></div>
         </div>
       </section>
@@ -107,11 +96,14 @@
 
     <footer class="footer">
       <div class="footer__content">
-        <p>&copy; <span id="anio"></span> Galway Bar. Todos los derechos reservados.</p>
-        <p>Diseñado para destacar la esencia del pub y facilitar la actualización del menú.</p>
+        <p>
+          &copy; <span id="anio"></span> Galway Bar. <span data-i18n="footer.rights"></span>
+        </p>
+        <p data-i18n="footer.tagline"></p>
       </div>
     </footer>
 
+    <script src="data/translations.js"></script>
     <script src="data/site-info.js"></script>
     <script src="data/menu.js"></script>
     <script src="assets/script.js" defer></script>
