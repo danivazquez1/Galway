@@ -20,7 +20,6 @@
         <p class="hero__subtitle">
           Un rincón irlandés con alma latina. Cocteles de autor, cervezas artesanales y música en vivo.
         </p>
-        <a class="btn" href="#reservas">Reservar mesa</a>
       </div>
       <nav class="navbar">
         <a class="navbar__brand" href="#inicio">Galway</a>
@@ -34,7 +33,6 @@
           <li><a href="#menu">Menú</a></li>
           <li><a href="#eventos">Eventos</a></li>
           <li><a href="#galeria">Galería</a></li>
-          <li><a href="#reservas">Reservas</a></li>
         </ul>
       </nav>
     </header>
@@ -52,9 +50,13 @@
             <div>
               <h3>Horario</h3>
               <ul class="plain-list">
-                <li><span>Lunes a miércoles:</span> 4:00 p.m. - 12:00 a.m.</li>
-                <li><span>Jueves a sábado:</span> 4:00 p.m. - 2:00 a.m.</li>
-                <li><span>Domingo:</span> 4:00 p.m. - 11:00 p.m.</li>
+                <li><span>Monday:</span> Closed</li>
+                <li><span>Tuesday:</span> 8:00 a.m. – 12:00 a.m.</li>
+                <li><span>Wednesday:</span> 8:00 a.m. – 12:00 a.m.</li>
+                <li><span>Thursday:</span> 8:00 a.m. – 12:00 a.m.</li>
+                <li><span>Friday:</span> 8:00 a.m. – 2:00 a.m.</li>
+                <li><span>Saturday:</span> 9:00 a.m. – 2:00 a.m.</li>
+                <li><span>Sunday:</span> 9:00 a.m. – 12:00 a.m.</li>
               </ul>
             </div>
             <div>
@@ -79,14 +81,9 @@
       <section class="section section--accent" id="menu">
         <div class="section__content">
           <h2>Menú</h2>
-          <p>
-            Explora nuestras categorías y descubre cócteles exclusivos, cervezas de barril y platos para compartir. Actualiza
-            el archivo <code>data/menu.js</code> para personalizar cada elemento.
-          </p>
+          <p>Explora nuestras categorías y descubre cócteles exclusivos, cervezas de barril y platos para compartir.</p>
           <div class="menu">
-            <aside class="menu__categories" aria-label="Categorías del menú">
-              <button class="menu__category-btn is-active" data-category="all">Todo</button>
-            </aside>
+            <aside class="menu__categories" aria-label="Categorías del menú"></aside>
             <div class="menu__items" aria-live="polite"></div>
           </div>
         </div>
@@ -106,46 +103,6 @@
         </div>
       </section>
 
-      <section class="section" id="reservas">
-        <div class="section__content section__content--split">
-          <div>
-            <h2>Reserva tu mesa</h2>
-            <p>
-              Déjanos tus datos y nos comunicaremos contigo para confirmar la disponibilidad. También puedes escribirnos por
-              WhatsApp para una respuesta más rápida.
-            </p>
-            <ul class="plain-list">
-              <li><span>Capacidad del bar:</span> 80 personas</li>
-              <li><span>Eventos privados:</span> Disponible de lunes a miércoles</li>
-              <li><span>Métodos de pago:</span> Efectivo, tarjetas débito/crédito y billeteras digitales</li>
-            </ul>
-          </div>
-          <form class="form" id="reserva-form">
-            <label>
-              Nombre completo
-              <input type="text" name="nombre" placeholder="Ej. Ana Gómez" required />
-            </label>
-            <label>
-              Teléfono
-              <input type="tel" name="telefono" placeholder="Ej. +57 300 0000000" required />
-            </label>
-            <label>
-              Fecha de la visita
-              <input type="date" name="fecha" required />
-            </label>
-            <label>
-              Número de personas
-              <input type="number" name="personas" min="1" max="20" value="2" required />
-            </label>
-            <label>
-              Comentarios
-              <textarea name="comentarios" rows="3" placeholder="Cuéntanos si celebras algo especial"></textarea>
-            </label>
-            <button class="btn" type="submit">Enviar solicitud</button>
-            <p class="form__feedback" role="status" aria-live="polite"></p>
-          </form>
-        </div>
-      </section>
     </main>
 
     <footer class="footer">
