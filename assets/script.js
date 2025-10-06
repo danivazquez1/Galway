@@ -12,15 +12,16 @@ const siteInfo = window.siteInfo || {};
 const menuData = window.menuData || { categorias: [], eventos: [], galeria: [] };
 
 function formatCurrency(value) {
-  if (!value) return "";
-  const numeric = Number(String(value).replace(/[^0-9.-]+/g, ""));
+  if (value === null || value === undefined || value === "") return "";
+  const numeric = Number(String(value).replace(/[^0-9.,-]+/g, "").replace(/,/g, "."));
   if (Number.isNaN(numeric)) {
     return value;
   }
-  return new Intl.NumberFormat("es-CO", {
+  return new Intl.NumberFormat("es-ES", {
     style: "currency",
-    currency: "COP",
-    maximumFractionDigits: 0,
+    currency: "EUR",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(numeric);
 }
 
