@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Galway Bar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Work+Sans:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <header class="hero" id="inicio">
+      <div class="hero__overlay"></div>
+      <div class="hero__content">
+        <h1>Galway Bar</h1>
+        <p class="hero__subtitle">
+          Un rincón irlandés con alma latina. Cocteles de autor, cervezas artesanales y música en vivo.
+        </p>
+        <a class="btn" href="#reservas">Reservar mesa</a>
+      </div>
+      <nav class="navbar">
+        <a class="navbar__brand" href="#inicio">Galway</a>
+        <button class="navbar__toggle" aria-label="Menú">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <ul class="navbar__links">
+          <li><a href="#sobre">Sobre nosotros</a></li>
+          <li><a href="#menu">Menú</a></li>
+          <li><a href="#eventos">Eventos</a></li>
+          <li><a href="#galeria">Galería</a></li>
+          <li><a href="#reservas">Reservas</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section class="section" id="sobre">
+        <div class="section__content">
+          <h2>Nuestra historia</h2>
+          <p>
+            Galway Bar nació como un homenaje a los pubs tradicionales de Irlanda con ingredientes y ritmos latinoamericanos.
+            Somos un equipo apasionado por la buena música, los sabores genuinos y la hospitalidad cálida. Cada semana
+            organizamos eventos especiales, catas guiadas y noches temáticas para que siempre encuentres algo nuevo.
+          </p>
+          <div class="info-grid">
+            <div>
+              <h3>Horario</h3>
+              <ul class="plain-list">
+                <li><span>Lunes a miércoles:</span> 4:00 p.m. - 12:00 a.m.</li>
+                <li><span>Jueves a sábado:</span> 4:00 p.m. - 2:00 a.m.</li>
+                <li><span>Domingo:</span> 4:00 p.m. - 11:00 p.m.</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Ubicación</h3>
+              <p id="direccion"></p>
+              <p id="barrio"></p>
+              <a id="mapa" class="link" href="#" target="_blank" rel="noopener">Ver en Google Maps</a>
+            </div>
+            <div>
+              <h3>Contacto</h3>
+              <ul class="plain-list">
+                <li><span>Teléfono:</span> <a id="telefono" href="tel:"></a></li>
+                <li><span>WhatsApp:</span> <a id="whatsapp" href="https://wa.me/" target="_blank" rel="noopener"></a></li>
+                <li><span>Correo:</span> <a id="correo" href="mailto:"></a></li>
+                <li><span>Instagram:</span> <a id="instagram" href="#" target="_blank" rel="noopener"></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--accent" id="menu">
+        <div class="section__content">
+          <h2>Menú</h2>
+          <p>
+            Explora nuestras categorías y descubre cócteles exclusivos, cervezas de barril y platos para compartir. Actualiza
+            el archivo <code>data/menu.js</code> para personalizar cada elemento.
+          </p>
+          <div class="menu">
+            <aside class="menu__categories" aria-label="Categorías del menú">
+              <button class="menu__category-btn is-active" data-category="all">Todo</button>
+            </aside>
+            <div class="menu__items" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="eventos">
+        <div class="section__content">
+          <h2>Eventos y experiencias</h2>
+          <div class="card-grid" id="eventos-grid"></div>
+        </div>
+      </section>
+
+      <section class="section section--dark" id="galeria">
+        <div class="section__content">
+          <h2>Galería</h2>
+          <div class="gallery" id="galeria-grid"></div>
+        </div>
+      </section>
+
+      <section class="section" id="reservas">
+        <div class="section__content section__content--split">
+          <div>
+            <h2>Reserva tu mesa</h2>
+            <p>
+              Déjanos tus datos y nos comunicaremos contigo para confirmar la disponibilidad. También puedes escribirnos por
+              WhatsApp para una respuesta más rápida.
+            </p>
+            <ul class="plain-list">
+              <li><span>Capacidad del bar:</span> 80 personas</li>
+              <li><span>Eventos privados:</span> Disponible de lunes a miércoles</li>
+              <li><span>Métodos de pago:</span> Efectivo, tarjetas débito/crédito y billeteras digitales</li>
+            </ul>
+          </div>
+          <form class="form" id="reserva-form">
+            <label>
+              Nombre completo
+              <input type="text" name="nombre" placeholder="Ej. Ana Gómez" required />
+            </label>
+            <label>
+              Teléfono
+              <input type="tel" name="telefono" placeholder="Ej. +57 300 0000000" required />
+            </label>
+            <label>
+              Fecha de la visita
+              <input type="date" name="fecha" required />
+            </label>
+            <label>
+              Número de personas
+              <input type="number" name="personas" min="1" max="20" value="2" required />
+            </label>
+            <label>
+              Comentarios
+              <textarea name="comentarios" rows="3" placeholder="Cuéntanos si celebras algo especial"></textarea>
+            </label>
+            <button class="btn" type="submit">Enviar solicitud</button>
+            <p class="form__feedback" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__content">
+        <p>&copy; <span id="anio"></span> Galway Bar. Todos los derechos reservados.</p>
+        <p>Diseñado para destacar la esencia del pub y facilitar la actualización del menú.</p>
+      </div>
+    </footer>
+
+    <script src="data/site-info.js"></script>
+    <script src="data/menu.js"></script>
+    <script src="assets/script.js" type="module"></script>
+  </body>
+</html>
